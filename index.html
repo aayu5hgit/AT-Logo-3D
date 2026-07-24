@@ -62,5 +62,33 @@ const mat=new THREE.MeshPhysicalMaterial({
 group.add(new THREE.Mesh(geo,mat));
 
 addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
-renderer.setAnimationLoop(()=>{ group.rotation.y+=0.006; renderer.render(scene,camera); });
+
+/* ---- interaction: drag to rotate (horizontal only), pause auto-spin, resume on release ---- */
+const AUTO=0.006;                 // idle spin speed (rad/frame)
+let dragging=false, lastX=0, vel=AUTO, idleTimer=0;
+const el=renderer.domElement;
+el.style.touchAction='pan-y';     // let vertical page scroll pass through on touch
+el.style.cursor='grab';
+
+function down(x){ dragging=true; lastX=x; vel=0; idleTimer=0; el.style.cursor='grabbing'; }
+function move(x){ if(!dragging) return; const dx=x-lastX; lastX=x;
+  const d=dx*0.01; group.rotation.y+=d; vel=d; }      // horizontal drag → Y rotation only
+function up(){ if(!dragging) return; dragging=false; el.style.cursor='grab'; idleTimer=0; }
+
+el.addEventListener('pointerdown',e=>{ el.setPointerCapture(e.pointerId); down(e.clientX); });
+el.addEventListener('pointermove',e=>move(e.clientX));
+el.addEventListener('pointerup',up);
+el.addEventListener('pointercancel',up);
+el.addEventListener('pointerleave',up);
+
+renderer.setAnimationLoop(()=>{
+  if(dragging){
+    /* rotation handled by drag */
+  } else {
+    // after release: let the flick momentum decay, then ease back to steady auto-spin
+    if(Math.abs(vel)>AUTO){ group.rotation.y+=vel; vel*=0.94; }
+    else { idleTimer=Math.min(idleTimer+0.02,1); vel=AUTO; group.rotation.y+=vel*idleTimer; }
+  }
+  renderer.render(scene,camera);
+});
 </script>
