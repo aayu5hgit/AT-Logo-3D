@@ -127,10 +127,10 @@ function build(depth){
   geo.translate(-CX,-CY,-depth/2);
   geo.computeVertexNormals();
   mat=new THREE.MeshPhysicalMaterial({
-    color:new THREE.Color('#0a0a0a'),          // keep the mark BLACK
-    metalness:0.45, roughness:0.5-parseFloat(polishEl.value)*0.42,
-    clearcoat:1.0, clearcoatRoughness:0.08,
-    envMapIntensity:0.9, side:THREE.DoubleSide,
+    color:new THREE.Color('#E0E0E0'),          // logo colour
+    metalness:0.25, roughness:0.5-parseFloat(polishEl.value)*0.34,
+    clearcoat:0.7, clearcoatRoughness:0.18,
+    envMapIntensity:0.7, side:THREE.DoubleSide,
   });
   const mesh=new THREE.Mesh(geo,mat); group.add(mesh);
 }
@@ -143,7 +143,7 @@ build(parseFloat(depthEl.value));
 document.getElementById('load').remove();
 
 depthEl.oninput=()=>{ const ry=group.rotation.y; build(parseFloat(depthEl.value)); group.rotation.y=ry; };
-polishEl.oninput=()=>{ if(mat){ mat.roughness=0.5-parseFloat(polishEl.value)*0.42; mat.needsUpdate=true; } };
+polishEl.oninput=()=>{ if(mat){ mat.roughness=0.5-parseFloat(polishEl.value)*0.34; mat.needsUpdate=true; } };
 
 let spinning=true, spinSpeed=parseFloat(spdEl.value);
 const bSpin=document.getElementById('spin');
