@@ -64,7 +64,7 @@ group.add(new THREE.Mesh(geo,mat));
 addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
 
 /* ---- interaction: drag to rotate (horizontal only), pause auto-spin, resume on release ---- */
-const AUTO=0.006;                 // idle spin speed (rad/frame)
+const AUTO=0.02;                 // idle spin speed (rad/frame)
 let dragging=false, lastX=0, vel=AUTO, idleTimer=0;
 const el=renderer.domElement;
 el.style.touchAction='pan-y';     // let vertical page scroll pass through on touch
